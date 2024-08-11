@@ -1,7 +1,7 @@
 #Django#
-*.pyc
-*.pot
-*.log
-__pycache__
+**/*.pyc
+**/*.pot
+**/*.log
+**/__pycache__/
 db.sqlite3
 media
