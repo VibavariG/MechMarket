@@ -9,13 +9,23 @@ from django.utils import timezone
 
 # Create your views here.
 
-def index(request):
-    return HttpResponse("Hi, it's the index page")
-# class IndexView(generic.ListView):
-#     template_name = "business/index.html"
-#     return H
-#     context_object_name = "latest_question_list"
+# def index(request):
+#     return HttpResponse("Hi, it's the index page")
+class IndexView(generic.ListView):
+    template_name = "business/index.html"
+    context_object_name = "product_list"
 
-#     def get_queryset(self):
-#         """Return the last five published questions."""
-#         return Question.objects.filter(choice__isnull=False).distinct().filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
+    def get_queryset(self):
+        """Return available products"""
+        return Product.objects.filter(date_released__lte=timezone.now())
+        #todo - order by popularity?
+
+class DetailView(generic.DetailView):
+    template_name = "business/detail.html"
+    model = Product
+
+def enquire(request, product_id):
+    return HttpResponse("Enquiring about product %s." % product_id)
+
+def ordernow(request, product_id):
+    return HttpResponse("Ordering product %s." % product_id)
