@@ -1,0 +1,15 @@
+<h2>Submit Enquiry</h2>
+{% if success_message %}
+    <div>{{success_message}}</div>
+{% endif %}
+<form action="{% url 'business:enquire' product.id%}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+{% if form.errors %}
+    <div>
+        <p>Please correct the errors below:</p>
+        {{form.errors}}
+    </div>
+{% endif %}

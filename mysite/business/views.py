@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 from .models import Product
+from .forms import EnquiryForm
 from django.utils import timezone
 
 
@@ -24,8 +25,25 @@ class DetailView(generic.DetailView):
     template_name = "business/detail.html"
     model = Product
 
-def enquire(request, product_id):
-    return HttpResponse("Enquiring about product %s." % product_id)
+class OrderView(generic.DetailView):
+    template_name = "business/order.html"
+    model = Product
 
-def ordernow(request, product_id):
-    return HttpResponse("Ordering product %s." % product_id)
+def enquire(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    if request.method == 'POST':
+        form = EnquiryForm(request.POST)
+        if form.is_valid():
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+            org = form.cleaned_data['org']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            success_message = f"Thank you, {firstname} {lastname}. We have received your message and will contact you at {email}."
+            return render(request, 'business/enquire.html', {'form': EnquiryForm(), 'success_message': success_message, 'product':product})
+        else:
+            return render(request, 'business/enquire.html', {'form':form, 'product':product})
+    else:
+        form = EnquiryForm()
+        return render(request, 'business/enquire.html', {'form': form, 'product':product})
